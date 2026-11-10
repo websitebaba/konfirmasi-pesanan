@@ -309,14 +309,37 @@ function validOrder(){
   if(Number($('price').value)<0){alert('Harga tidak boleh kurang dari 0.');return false;}
   return true;
 }
-$('nextBtn').addEventListener('click',()=>{
+async function sendOrderToTelegram(){
+  const response=await fetch('/api/send-telegram',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      receiver:val('receiver'),
+      phone:val('phone'),
+      product:val('product'),
+      qty:qty(),
+      price:money($('price').value),
+      payment:selectedPayment(),
+      notes:val('notes'),
+      total:money(total())
+    })
+  });
+  if(!response.ok) throw new Error('Telegram request failed');
+}
+$('nextBtn').addEventListener('click',async()=>{
   if(currentStep===1){
     if(!validOrder()) return;
     updateCheckout();
     showStep(2);
   }else if(currentStep===2){
-    // Navigasi eksternal dilakukan hanya setelah pengguna menekan tombol di halaman kedua.
-    window.location.assign(CHECKOUT_DESTINATION);
+    $('nextBtn').disabled=true;
+    try{
+      await sendOrderToTelegram();
+      window.location.assign(CHECKOUT_DESTINATION);
+    }catch(error){
+      $('nextBtn').disabled=false;
+      alert('Pesanan belum dapat dikirim. Silakan coba lagi.');
+    }
   }
 });
 $('backBtn').addEventListener('click',()=>showStep(1));
