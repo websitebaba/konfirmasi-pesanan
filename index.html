@@ -157,7 +157,7 @@ button{min-height:58px;border:0;border-radius:7px;padding:0 18px;font-size:15px;
       <div class="field"><label class="field-label" for="product">Nama produk</label><input id="product" type="text" placeholder="Masukkan nama produk" required></div>
       <div class="field">
         <label class="field-label" for="productImage">Unggah gambar produk</label>
-        <input id="productImage" type="file" accept="image/*" aria-describedby="imageHint">
+        <input id="productImage" type="file" accept="image/*" aria-describedby="imageHint" required>
         <p class="hint" id="imageHint">Pilih foto produk (JPG, PNG, atau WEBP). Gambar akan ditampilkan pada halaman checkout dan pemeriksaan akhir.</p>
         <div id="uploadPreview" class="upload-preview hidden">
           <img id="uploadPreviewImg" alt="Pratinjau gambar produk">
@@ -168,7 +168,7 @@ button{min-height:58px;border:0;border-radius:7px;padding:0 18px;font-size:15px;
         <div class="field"><label class="field-label" for="qty">Jumlah</label><input id="qty" type="number" min="1" step="1" value="1" required></div>
         <div class="field"><label class="field-label" for="price">Harga satuan (Rp)</label><input id="price" type="number" min="0" step="1000" placeholder="1.000.000" inputmode="numeric" required></div>
       </div>
-      <div class="field"><label class="field-label" for="notes">Kelengkapan pesanan (opsional)</label><textarea id="notes" placeholder="Tambahkan catatan jika diperlukan"></textarea></div>
+      <div class="field"><label class="field-label" for="notes">Kelengkapan pesanan</label><textarea id="notes" placeholder="Tuliskan kelengkapan pesanan" required></textarea></div>
     </form>
     <div class="info">Periksa kembali data pesanan sebelum melanjutkan ke checkout.</div>
   </section>
