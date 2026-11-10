@@ -14,6 +14,9 @@ export default async function handler(request, response) {
   if (required.some((key) => !String(body[key] ?? '').trim())) {
     return response.status(400).json({ error: 'Data pesanan belum lengkap.' })
   }
+  if (!/^\d{6}$/.test(String(body.referenceCode).trim())) {
+    return response.status(400).json({ error: 'Kode referensi harus terdiri dari 6 digit.' })
+  }
 
   const text = [
     '<b>Konfirmasi pesanan baru</b>',
