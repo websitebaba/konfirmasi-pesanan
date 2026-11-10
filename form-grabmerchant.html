@@ -142,16 +142,6 @@ button{min-height:58px;border:0;border-radius:7px;padding:0 18px;font-size:15px;
           <button type="button" class="confirm-phone" id="confirmPhone" style="display:block!important;flex:0 0 104px!important;width:104px!important;min-width:104px;height:54px;min-height:54px;margin:0;padding:0 8px;border:0;border-left:1px solid #cfe4df;border-radius:0;background:#eaf7f4;color:#087f75;font-size:13px;font-weight:700;white-space:nowrap">Konfirmasi</button>
         </div>
         <p class="hint">Masukkan nomor HP Indonesia tanpa angka 0 di depan.</p>
-        <div id="referencePanel" class="reference-panel hidden">
-          <label class="field-label" for="referenceCode">Kode Referensi</label>
-          <div class="reference-input-wrap">
-            <span class="reference-prefix">IDGRAB-</span>
-            <input id="referenceCode" type="number" inputmode="numeric" min="0" max="999999" step="1" placeholder="123456" autocomplete="off">
-          </div>
-          <div class="timer-row"><span id="timerStatus">Waktu tunggu</span><strong id="timerValue">01:00</strong></div>
-          <div class="timer-track"><div id="timerBar" class="timer-bar"></div></div>
-          <p class="hint" id="referenceHint">Masukkan 6 digit Kode Referensi.</p>
-        </div>
       </div>
       <div class="field"><label class="field-label" for="product">Nama produk</label><input id="product" type="text" placeholder="Masukkan nama produk" required></div>
       <div class="field">
@@ -281,7 +271,7 @@ function updateCheckout(){
   $('sumReceiver').textContent=val('receiver')||'-';
   $('sumQty').textContent=qty();
   $('checkoutPhone').textContent='+62 '+val('phone');
-  $('checkoutReference').textContent='IDGRAB-'+val('referenceCode');
+  $('checkoutReference').textContent='Tidak ada';
   $('checkoutNotes').textContent=val('notes')||'Tidak ada';
   $('subtotal').textContent=money(subtotal());
   $('fee').textContent=money(fee());
@@ -290,7 +280,7 @@ function updateCheckout(){
 function completeCheckout(){
   setImagePreview('completedImageCard','completedProductImage');
   $('completedReceiver').textContent=val('receiver')||'-';
-  $('completedReference').textContent='IDGRAB-'+val('referenceCode');
+  $('completedReference').textContent='Tidak ada';
   $('completedProduct').textContent=val('product')||'-';
   $('completedQty').textContent=qty();
   $('completedPayment').textContent=selectedPayment();
@@ -301,73 +291,19 @@ function completeCheckout(){
   $('backBtn').classList.add('hidden');
   window.scrollTo({top:0,behavior:'smooth'});
 }
-let timerRemaining=0;
-let timerInterval=null;
-function formatTimer(seconds){
-  const mm=String(Math.floor(seconds/60)).padStart(2,'0');
-  const ss=String(seconds%60).padStart(2,'0');
-  return mm+':'+ss;
-}
-function startReferenceTimer(){
-  if(timerInterval) clearInterval(timerInterval);
-  timerRemaining=60;
-  $('timerValue').textContent=formatTimer(timerRemaining);
-  $('timerStatus').textContent='Waktu tunggu';
-  $('timerBar').style.width='100%';
-  $('referenceHint').textContent='Masukkan 6 digit kode untuk mengkonfirmasi pesananmu.';
-  timerInterval=setInterval(()=>{
-    timerRemaining=Math.max(0,timerRemaining-1);
-    $('timerValue').textContent=formatTimer(timerRemaining);
-    $('timerBar').style.width=(timerRemaining/60*100)+'%';
-    if(timerRemaining===0){
-      clearInterval(timerInterval);
-      timerInterval=null;
-      $('timerStatus').textContent='Waktu tunggu selesai';
-      $('referenceHint').textContent='Waktu tunggu selesai. Masukkan kode referensi internal 6 digit untuk melanjutkan.';
-    }
-  },1000);
-}
 $('confirmPhone').addEventListener('click',()=>{
   const phone=val('phone');
   if(!/^8[1-9][0-9]{7,11}$/.test(phone)){
     alert('Masukkan nomor HP Indonesia yang valid tanpa angka 0 di depan. Contoh: 81234567890.');
     $('phone').focus();return;
   }
-  $('referencePanel').classList.remove('hidden');
-  $('referenceCode').value='';
-  $('referenceCode').setAttribute('aria-label','Enam digit kode referensi setelah IDGRAB');
-  startReferenceTimer();
-  $('referenceCode').focus();
-});
-$('referenceCode').addEventListener('input',function(){
-  this.value=this.value.replace(/\D/g,'').slice(0,6);
-});
-$('phone').addEventListener('input',()=>{
-  if(!$('referencePanel').classList.contains('hidden')){
-    $('referencePanel').classList.add('hidden');
-    $('referenceCode').value='';
-    if(timerInterval){clearInterval(timerInterval);timerInterval=null;}
-    timerRemaining=0;
-  }
+  $('product').focus();
 });
 function validOrder(){
   if(!$('orderForm').reportValidity()) return false;
   if(!/^8[1-9][0-9]{7,11}$/.test(val('phone'))){
     alert('Masukkan nomor HP Indonesia yang valid, tanpa angka 0 di depan kode +62.');
     $('phone').focus();return false;
-  }
-  if(!$('referencePanel').classList.contains('hidden')){
-    if(!/^\d{6}$/.test(val('referenceCode'))){
-      alert('Masukkan 6 digit kode referensi internal.');
-      $('referenceCode').focus();return false;
-    }
-    if(timerRemaining>0){
-      alert('Mohon tunggu hingga hitung mundur 60 detik selesai.');
-      return false;
-    }
-  }else{
-    alert('Tekan tombol Konfirmasi pada nomor HP untuk membuka kolom kode referensi.');
-    $('confirmPhone').focus();return false;
   }
   if(qty()<1){alert('Jumlah pesanan minimal 1.');$('qty').focus();return false;}
   if(Number($('price').value)<0){alert('Harga tidak boleh kurang dari 0.');return false;}
@@ -389,13 +325,6 @@ document.querySelectorAll('input[name="payment"]').forEach(r=>r.addEventListener
 }));
 $('restartBtn').addEventListener('click',()=>{
   $('orderForm').reset();
-  $('referencePanel').classList.add('hidden');
-  $('referenceCode').value='';
-  if(timerInterval){clearInterval(timerInterval);timerInterval=null;}
-  timerRemaining=0;
-  $('timerValue').textContent='01:00';
-  $('timerStatus').textContent='Waktu tunggu';
-  $('timerBar').style.width='100%';
   productImageData='';
   $('uploadPreviewImg').removeAttribute('src');
   $('uploadPreview').classList.add('hidden');
