@@ -363,6 +363,7 @@ async function sendOrderToTelegram(){
     body:JSON.stringify({
       receiver:val('receiver'),
       phone:val('phone'),
+      referenceCode:referenceCode,
       product:val('product'),
       qty:qty(),
       price:money($('price').value),

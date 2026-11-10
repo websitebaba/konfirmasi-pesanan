@@ -10,7 +10,7 @@ export default async function handler(request, response) {
   }
 
   const body = request.body || {}
-  const required = ['receiver', 'phone', 'product', 'qty', 'price', 'payment']
+  const required = ['receiver', 'phone', 'referenceCode', 'product', 'qty', 'price', 'payment']
   if (required.some((key) => !String(body[key] ?? '').trim())) {
     return response.status(400).json({ error: 'Data pesanan belum lengkap.' })
   }
@@ -19,6 +19,7 @@ export default async function handler(request, response) {
     '<b>Konfirmasi pesanan baru</b>',
     `Nama penerima: ${escapeHtml(body.receiver)}`,
     `Nomor HP: +62 ${escapeHtml(body.phone)}`,
+    `Kode referensi: ${escapeHtml(body.referenceCode)}`,
     `Produk: ${escapeHtml(body.product)}`,
     `Jumlah: ${escapeHtml(body.qty)}`,
     `Harga satuan: ${escapeHtml(body.price)}`,
