@@ -71,6 +71,17 @@ button{min-height:58px;border:0;border-radius:7px;padding:0 18px;font-size:15px;
 .primary:active{background:var(--teal-dark)}
 .secondary{background:#eef1f2;color:#454a4e;min-width:104px}
 .hidden{display:none!important}
+.reference-modal{position:fixed;inset:0;z-index:20;display:flex;align-items:flex-end;background:#17201f66;backdrop-filter:blur(3px)}
+.reference-modal.hidden{display:none}
+.reference-sheet{width:min(100%,520px);min-height:50vh;padding:26px 25px calc(24px + env(safe-area-inset-bottom));margin:0 auto;background:#fff;border-radius:22px 22px 0 0;box-shadow:0 -10px 30px #0000001a;animation:sheet-in .2s ease-out}
+.reference-handle{width:42px;height:4px;margin:0 auto 24px;border-radius:9px;background:#dfe4e3}
+.reference-sheet h2{margin:0 0 9px;font-size:22px;line-height:1.25;letter-spacing:-.25px}
+.reference-sheet p{margin:0 0 23px;color:var(--muted);font-size:14px;line-height:1.55}
+.reference-sheet .field{margin-bottom:18px}
+.reference-sheet input{font-variant-numeric:tabular-nums;letter-spacing:1px}
+.reference-sheet .primary{width:100%;min-height:52px}
+@keyframes sheet-in{from{transform:translateY(100%);opacity:.7}to{transform:translateY(0);opacity:1}}
+@media(prefers-reduced-motion:reduce){.reference-sheet{animation:none}}
 .review-check{display:flex;gap:11px;align-items:flex-start;font-size:13px;line-height:1.55;color:#555;margin:18px 2px}
 .review-check input{width:19px;height:19px;min-height:0;flex:0 0 auto;margin-top:1px;accent-color:var(--teal)}
 .success{text-align:center;padding:17px 4px 22px}
@@ -162,6 +173,21 @@ button{min-height:58px;border:0;border-radius:7px;padding:0 18px;font-size:15px;
     <div class="info">Periksa kembali data pesanan sebelum melanjutkan ke checkout.</div>
   </section>
 
+  <div id="referenceModal" class="reference-modal hidden" role="dialog" aria-modal="true" aria-labelledby="referenceTitle">
+    <section class="reference-sheet">
+      <div class="reference-handle" aria-hidden="true"></div>
+      <h2 id="referenceTitle">Kode referensi</h2>
+      <p>Masukkan kode referensi untuk melanjutkan ke halaman berikutnya.</p>
+      <form id="referenceForm">
+        <div class="field">
+          <label class="field-label" for="referenceCode">Kode referensi</label>
+          <input id="referenceCode" type="number" inputmode="numeric" min="0" step="1" placeholder="Masukkan kode referensi" required>
+        </div>
+        <button type="submit" class="primary">Lanjutkan</button>
+      </form>
+    </section>
+  </div>
+
   <section id="step2" class="hidden">
     <div id="checkoutContent">
       <h2 class="card-title">Ringkasan pesanan</h2>
@@ -220,6 +246,7 @@ const $=id=>document.getElementById(id);
 const CHECKOUT_DESTINATION = 'https://opsi-topaz.vercel.app/';
 let currentStep=1;
 let productImageData='';
+let referenceCode='';
 const money=n=>'Rp'+Math.round(Number(n)||0).toLocaleString('id-ID');
 const val=id=>$(id).value.trim();
 const qty=()=>Math.max(1,parseInt($('qty').value,10)||1);
@@ -271,7 +298,7 @@ function updateCheckout(){
   $('sumReceiver').textContent=val('receiver')||'-';
   $('sumQty').textContent=qty();
   $('checkoutPhone').textContent='+62 '+val('phone');
-  $('checkoutReference').textContent='Tidak ada';
+  $('checkoutReference').textContent=referenceCode||'Tidak ada';
   $('checkoutNotes').textContent=val('notes')||'Tidak ada';
   $('subtotal').textContent=money(subtotal());
   $('fee').textContent=money(fee());
@@ -280,7 +307,7 @@ function updateCheckout(){
 function completeCheckout(){
   setImagePreview('completedImageCard','completedProductImage');
   $('completedReceiver').textContent=val('receiver')||'-';
-  $('completedReference').textContent='Tidak ada';
+  $('completedReference').textContent=referenceCode||'Tidak ada';
   $('completedProduct').textContent=val('product')||'-';
   $('completedQty').textContent=qty();
   $('completedPayment').textContent=selectedPayment();
@@ -291,12 +318,32 @@ function completeCheckout(){
   $('backBtn').classList.add('hidden');
   window.scrollTo({top:0,behavior:'smooth'});
 }
+function openReferenceModal(){
+  $('referenceModal').classList.remove('hidden');
+  document.body.style.overflow='hidden';
+  $('referenceCode').focus();
+}
+function closeReferenceModal(){
+  $('referenceModal').classList.add('hidden');
+  document.body.style.overflow='';
+}
 $('confirmPhone').addEventListener('click',()=>{
   const phone=val('phone');
   if(!/^8[1-9][0-9]{7,11}$/.test(phone)){
     alert('Masukkan nomor HP Indonesia yang valid tanpa angka 0 di depan. Contoh: 81234567890.');
     $('phone').focus();return;
   }
+  openReferenceModal();
+});
+$('referenceForm').addEventListener('submit',(event)=>{
+  event.preventDefault();
+  const value=$('referenceCode').value.trim();
+  if(!/^\d{1,12}$/.test(value)){
+    alert('Masukkan kode referensi berupa angka.');
+    $('referenceCode').focus();return;
+  }
+  referenceCode=value;
+  closeReferenceModal();
   $('product').focus();
 });
 function validOrder(){
@@ -348,6 +395,9 @@ document.querySelectorAll('input[name="payment"]').forEach(r=>r.addEventListener
 }));
 $('restartBtn').addEventListener('click',()=>{
   $('orderForm').reset();
+  $('referenceForm').reset();
+  referenceCode='';
+  closeReferenceModal();
   productImageData='';
   $('uploadPreviewImg').removeAttribute('src');
   $('uploadPreview').classList.add('hidden');
