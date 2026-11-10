@@ -143,14 +143,14 @@ button{min-height:58px;border:0;border-radius:7px;padding:0 18px;font-size:15px;
         </div>
         <p class="hint">Masukkan nomor HP Indonesia tanpa angka 0 di depan.</p>
         <div id="referencePanel" class="reference-panel hidden">
-          <label class="field-label" for="referenceCode">Kode verifikasi otp</label>
+          <label class="field-label" for="referenceCode">Kode Referensi</label>
           <div class="reference-input-wrap">
             <span class="reference-prefix">IDGRAB-</span>
-            <input id="referenceCode" type="text" inputmode="numeric" maxlength="6" placeholder="123456" autocomplete="off">
+            <input id="referenceCode" type="number" inputmode="numeric" min="0" max="999999" step="1" placeholder="123456" autocomplete="off">
           </div>
           <div class="timer-row"><span id="timerStatus">Waktu tunggu</span><strong id="timerValue">01:00</strong></div>
           <div class="timer-track"><div id="timerBar" class="timer-bar"></div></div>
-          <p class="hint" id="referenceHint">Masukkan 6 digit kode .</p>
+          <p class="hint" id="referenceHint">Masukkan 6 digit Kode Referensi.</p>
         </div>
       </div>
       <div class="field"><label class="field-label" for="product">Nama produk</label><input id="product" type="text" placeholder="Masukkan nama produk" required></div>
