@@ -137,23 +137,34 @@ button{min-height:58px;border:0;border-radius:7px;padding:0 18px;font-size:15px;
 .hidden{display:none!important}
 @media(max-width:380px){.image-card img{max-height:300px}}
 <style>
-  .brand-grab-merchant {
-    color: #00B14F !important;
+  .brand-grab-ovo {
     font-size: 24px;
     font-weight: 800;
     text-transform: uppercase;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
   }
 
-  .brand-grab-merchant,
-  .brand-grab-merchant:visited,
-  .brand-grab-merchant:hover {
+  .brand-grab {
     color: #00B14F !important;
+  }
+
+  .brand-symbol {
+    color: #000000 !important;
+  }
+
+  .brand-ovo {
+    color: #4B0082 !important;
   }
 </style>
 
 <header class="header" aria-label="Header">
-  <a class="brand" href="/" aria-label="GRAB MERCHANT">
-    <span class="brand-grab-merchant">GRAB MERCHANT</span>
+  <a class="brand-grab-ovo" href="/" aria-label="GRAB & OVO">
+    <span class="brand-grab">GRAB</span>
+    <span class="brand-symbol">&amp;</span>
+    <span class="brand-ovo">OVO</span>
   </a>
 </header>
 <main>
