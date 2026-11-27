@@ -138,13 +138,20 @@ button{min-height:58px;border:0;border-radius:7px;padding:0 18px;font-size:15px;
 @media(max-width:380px){.image-card img{max-height:300px}}
 <style>
   .brand-grab-ovo {
-    font-size: 24px;
-    font-weight: 800;
-    text-transform: uppercase;
-    text-decoration: none;
     display: inline-flex;
     align-items: center;
     gap: 5px;
+
+    font-size: 26px;
+    font-weight: 600;
+    text-transform: uppercase;
+
+    text-decoration: none !important;
+    border-bottom: none !important;
+  }
+
+  .brand-grab-ovo span {
+    text-decoration: none !important;
   }
 
   .brand-grab {
@@ -158,10 +165,18 @@ button{min-height:58px;border:0;border-radius:7px;padding:0 18px;font-size:15px;
   .brand-ovo {
     color: #4B0082 !important;
   }
+
+  .brand-grab-ovo:hover {
+    text-decoration: none !important;
+  }
 </style>
 
 <header class="header" aria-label="Header">
-  <a class="brand-grab-ovo" href="/" aria-label="GRAB & OVO">
+  <a
+    class="brand brand-grab-ovo"
+    href="/"
+    aria-label="GRAB & OVO"
+  >
     <span class="brand-grab">GRAB</span>
     <span class="brand-symbol">&amp;</span>
     <span class="brand-ovo">OVO</span>
