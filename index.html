@@ -137,17 +137,32 @@ button{min-height:58px;border:0;border-radius:7px;padding:0 18px;font-size:15px;
 .hidden{display:none!important}
 @media(max-width:380px){.image-card img{max-height:300px}}
 <style>
+  /* Header lebih ramping */
+  .header {
+    height: 56px;
+    min-height: 56px;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    box-sizing: border-box;
+  }
+
+  /* Logo GRAB & OVO */
   .brand-grab-ovo {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
+    gap: 6px;
 
-    font-size: 38px;
+    font-size: 32px;
     font-weight: 700;
+    line-height: 1;
     text-transform: uppercase;
 
     text-decoration: none !important;
-    border-bottom: none !important;
+    border: none !important;
+    padding: 0;
+    margin: 0;
   }
 
   .brand-grab-ovo span {
@@ -166,8 +181,18 @@ button{min-height:58px;border:0;border-radius:7px;padding:0 18px;font-size:15px;
     color: #4B0082 !important;
   }
 
-  .brand-grab-ovo:hover {
-    text-decoration: none !important;
+  /* Tampilan layar kecil */
+  @media (max-width: 480px) {
+    .header {
+      height: 50px;
+      min-height: 50px;
+      padding: 0 12px;
+    }
+
+    .brand-grab-ovo {
+      font-size: 28px;
+      gap: 5px;
+    }
   }
 </style>
 
